@@ -48,6 +48,7 @@ uvicorn = "0.32.1"
 uvloop = "0.21.0"
 watchfiles = "1.0.0"
 websockets = "14.1"
+sqlmodel = "^0.0.22"
 
 [build-system]
 requires = ["poetry-core"]

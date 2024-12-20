@@ -1,7 +1,8 @@
-from pydantic import BaseModel
+
+from sqlmodel import SQLModel, Field
 
 
-class Customer(BaseModel):
-    id: int
-    name: str
-    address: str
+class Customer(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    name: str = Field(index=True)
+    address: str = Field(default=None)

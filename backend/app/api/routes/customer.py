@@ -1,10 +1,11 @@
 from typing import List, Annotated
 from fastapi import APIRouter, Query, HTTPException
 
-from app.models import Customer
+from app.models import Customer, CustomerCreate, CustomerRead, CustomerUpdate
 
 from app.core.db import SessionDep
 from sqlmodel import select
+
 
 router = APIRouter()
 
@@ -25,15 +26,24 @@ async def read_customers(
 
 
 @router.post("/customers", response_model=Customer)
-async def create_customer(customer: Customer, session: SessionDep) :
-    session.add(customer)
+async def create_customer(customer: CustomerCreate, session: SessionDep) :
+    db_customer = Customer.model_validate(customer)
+    session.add(db_customer)
     session.commit()
-    session.refresh(customer)
-    return customer
+    session.refresh(db_customer)
+    return db_customer
+
+
+@router.get("/customers/{customer_id}", response_model=CustomerRead)
+def read_customer(customer_id: int, session: SessionDep):
+    db_customer: Customer = session.get(Customer, customer_id)
+    if not db_customer:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    return db_customer
 
 
 @router.put("/customers/{customer_id}", response_model=Customer)
-async def update_customer(customer_id: int, customer: Customer, session: SessionDep):
+async def update_customer(customer_id: int, customer: CustomerUpdate, session: SessionDep):
     print(f"update_customer start")
 
     db_customer: Customer = session.get(Customer, customer_id)

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.routes import hello,customer
+from app.api.routes import hello, customer
 
 api_router = APIRouter()
 api_router.include_router(customer.router, tags=["customer"])
